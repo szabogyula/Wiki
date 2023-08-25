@@ -2,15 +2,15 @@
 title: Prowlarr Supported Indexers
 description: Indexers currently named as supported in the current nightly build of Prowlarr. Other indexers may be available via either Generic Newznab or Generic Torznab.
 published: true
-date: 2023-08-22T00:54:43.264587
+date: 2023-08-25T00:55:04.548392
 tags: prowlarr, indexers
 editor: markdown
-dateCreated: 2023-08-22T00:54:43.264587
+dateCreated: 2023-08-25T00:55:04.548392
 ---
 
 - Supported Trackers and Indexers as of
-  - Prowlarr Build `1.8.4.3882` / [Commit: 1b0c9adf243f2a2934c0ab00313db7b01951ff9c](https://github.com/Prowlarr/Prowlarr/commit/1b0c9adf243f2a2934c0ab00313db7b01951ff9c)
-  - [Prowlarr Indexers Commit: 671c7afbde4d706a69326bdc1cd6ae1d2ff5a1ad](https://github.com/Prowlarr/Indexers/commit/671c7afbde4d706a69326bdc1cd6ae1d2ff5a1ad)
+  - Prowlarr Build `1.8.4.3883` / [Commit: 1b0c9adf243f2a2934c0ab00313db7b01951ff9c](https://github.com/Prowlarr/Prowlarr/commit/1b0c9adf243f2a2934c0ab00313db7b01951ff9c)
+  - [Prowlarr Indexers Commit: 40d27063aced22d3a2c1e46f064fa48063595492](https://github.com/Prowlarr/Indexers/commit/40d27063aced22d3a2c1e46f064fa48063595492)
 
 ---
 
@@ -570,6 +570,8 @@ dateCreated: 2023-08-22T00:54:43.264587
 |[OnlyEncodes (API)](https://onlyencodes.cc/){#onlyencodes-api}|OnlyEncodes is a Private Tracker for MOVIES / TV|English (United States)|
 |[Ostwiki](https://www.ostwiki.com/){#ostwiki}|Ostwiki is a Private Torrent Tracker for Soundtracks releases|English (United States)|
 |[Panda](https://pandapt.net/){#panda}|Panda is a CHINESE Private Torrent Tracker for MOVIES / TV / GENERAL|Chinese (China)|
+|[PTCafe](https://ptcafe.club/){#ptcafe}|PTCafe (咖啡) is a CHINESE Private Torrent Tracker for MOVIES / TV / GENERAL|Chinese (China)|
+|[PTLSP](https://www.ptlsp.com/){#ptlsp}|PTLSP is a CHINESE Private Torrent Tracker for MOVIES / TV / GENERAL|Chinese (China)|
 |[RareShare2 (API)](https://rareshare2.me/){#rareshare2}|RareShare2 is a Private Torrent Tracker for TV|English (United States)|
 |[Rousi](https://rousi.zip/){#rousi}|Rousi is a CHINESE Private Torrent Tracker for MOVIES / TV / GENERAL|Chinese (China)|
 |[Shadowflow](https://shadowflow.org/){#shadowflow}|Shadowflow (影) is a CHINESE Private Torrent Tracker for MOVIES / TV / GENERAL|Chinese (China)|
