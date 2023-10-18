@@ -2,7 +2,7 @@
 title: Radarr FAQ
 description: Radarr FAQ
 published: true
-date: 2023-08-20T09:49:10.418Z
+date: 2023-10-13T11:41:22.239Z
 tags: radarr, needs-love, troubleshooting, faq
 editor: markdown
 dateCreated: 2021-05-16T20:44:27.778Z
@@ -87,6 +87,9 @@ dateCreated: 2021-05-16T20:44:27.778Z
 - If you've already added the movie, but now you want to search for it, you have a few choices. You can go to the movie's page and use the search button, which will do a search and then automatically pick one. You can use the Search tab and see *all* the results, hand picking the one you want. Or you can use the filters of `Missing`, `Wanted`, or `Cut-off Unmet`.
 - If Radarr has been offline for an extended period of time, Radarr will attempt to page back to find the last release it processed in an attempt to avoid missing a release. As long as your indexer supports paging and it hasn't been too long Radarr will be able to process the releases it would have missed and avoid you needing to perform a search for the missed movies.
 
+> Upgradinatorr can do periodic bulk searches which is useful to safely and sanely look for upgrades after major changes to one's quality profile. Use [Drazzlib's Python Script](/useful-tools#drazzilbs-userscripts) or [Cuban's Powershell Script](/useful-tools#just-a-bunch-of-starr-scripts)
+{.is-info}
+
 ## How does Radarr find movies?
 
 > This FAQ item is a legacy FAQ Entry. Refer to [How does Radarr work?](#how-does-radarr-work)
@@ -100,11 +103,19 @@ dateCreated: 2021-05-16T20:44:27.778Z
 
 If Radarr is exposed so that the UI can be accessed from outside your local network then you should have some form of authentication method enabled in order to access the UI. This is also increasingly required by Trackers and Indexers.
 
-As of v5 Radarr will automatically enforce this by enabling its internal authentication system.
+**As of Radarr v5, Authentication is Mandatory.**
 
-- If you use an **external authentication** such as Authelia, Authetik, NGINX Basic auth, etc. you can prevent needing to double authenticate by shutting down the app, setting `<AuthenticationMethod>External</AuthenticationMethod>` in the [config file](/radarr/appdata-directory), and restarting the app. **Note that multiple `AuthenticationMethod` entries in the file are not supported and only the topmost will be used**
+### Authentication Method
 
-- If you do not expose Radarr externally or do not wish to have auth required for local access then change in Settings => General Security => Authentication Required to `Disabled For Local Addresses`
+- `Basic` (Browser pop-up) - This option when accessing your Radarr will show a small pop-up allowing you to input a Username and Password
+- `Forms` (Login Page) - This option will have a familiar looking login screen much like other websites have to allow you to log onto your Radarr
+- `External` - Configurable via Config File Only
+  - If you use an **external authentication** such as Authelia, Authetik, NGINX Basic auth, etc. you can prevent needing to double authenticate by shutting down the app, setting `<AuthenticationMethod>External</AuthenticationMethod>` in the [config file](/radarr/appdata-directory), and restarting the app. **Note that multiple `AuthenticationMethod` entries in the file are not supported and only the topmost value will be used**
+  - [OIDC Support](https://github.com/Radarr/Radarr/issues/7047#issuecomment-1696156068) is being explored for future versions (Ref [GHI #7047](https://github.com/Radarr/Radarr/issues/7047)) and is NOT currently supported.
+
+### Authentication Required
+
+- If you do not expose the app externally and/or do not wish to have auth required for local (e.g. LAN (i.e. Link Local, [Class A, Class C, or Class B](https://en.wikipedia.org/wiki/Classful_network#Classful_addressing_definition) addresses)) access then change in Settings => General Security => Authentication Required to `Disabled For Local Addresses`
   - The config file equivalent of this is `<AuthenticationType>DisabledForLocalAddresses</AuthenticationType>`
 
 ## What is Minimum Availability?
@@ -162,14 +173,9 @@ As of v5 Radarr will automatically enforce this by enabling its internal authent
 
 ## Can all my movie files be stored in one folder?
 
-- No and the reason is that Radarr is a fork of [Sonarr](/sonarr), where every show has a folder. This limitation is a known pain point for many users and will maybe come in a future version. Please note that it is not a simple change and effectively requires an entire rewrite of the backend.
-- The [Custom Folder GitHub Issue](https://github.com/Radarr/Radarr/issues/153) technically covers this request, but it is no guarantee that all movie files in one folder will be implemented at that time.
-- A slight hack-ish solution is described below. Please note that you mustn't trigger a rescan in Radarr or it will show as missing and regardless the movie will never be upgraded.
-  - Use a Custom Script
-    - the script should be triggered on import
-    - it should be designed to move the file whenever you want it
-    - it then needs to call the Radarr API and change the movie to unmonitored.
-- If you're looking to moving all your movies from one folder to individual folders check out the [Tips and Tricks Section => Create a Folder for Each Movie](/radarr/tips-and-tricks#creating-a-folder-for-each-movie) article
+- No. Radarr is a fork of [Sonarr](/sonarr) and thus requires that each movie be stored in individual folders. It is **highly unlikely** a flat file structure would ever be supported due to substantial backend modifications required.
+- The [Custom Folder GitHub Issue](https://github.com/Radarr/Radarr/issues/153) addresses this request, but it is **unlikely** that it would allow all movie files to be housed in a single folder.
+- For information on how to move your movies from a single folder to separate folders, refer to the [Tips and Tricks Section => Create a Folder for Each Movie](/radarr/tips-and-tricks#creating-a-folder-for-each-movie).
 
 ## Can I put all my movies in my library into one folder?
 
@@ -461,10 +467,13 @@ As of v5 Radarr will automatically enforce this by enabling its internal authent
 
 To disable authentication (to reset your forgotten username or password) you will need need to edit `config.xml` which will be inside the [Radarr Appdata Directory](/radarr/appdata-directory)
 
+1. Close Radarr
 1. Open config.xml in a text editor
 1. Find the authentication method line will be
 `<AuthenticationMethod>Basic</AuthenticationMethod>` or `<AuthenticationMethod>Forms</AuthenticationMethod>`
-1. Change the `AuthenticationMethod` line to `<AuthenticationMethod>None</AuthenticationMethod>`
+*(Be sure that you do not have two AuthenticationMethod entries in your file)*
+1. Change the `AuthenticationMethod` line to `<AuthenticationMethod>External</AuthenticationMethod>`
+*(If you are running an older 4.x version, the correct value is None instead of External)*
 1. Restart Radarr
 1. Radarr will now be accessible without a password, you should go the `Settings: General` in the UI and set your username and password
 
@@ -575,13 +584,13 @@ Depending on your OS, there are multiple possible ways.
 
 ## Text Searches
 
-- **Indexers not supporting id based searches or id based searches with no results** - Search on will use the Movie's Original Title, English Title, and Translated Title from whatever languages you have preferred in the movie's quality profile and any custom formats with scores in the quality profile greater than zero.
+- **Indexers not supporting id based searches or id based searches with no results** - Search on will use the Movie's Original Title, English Title, and Translated Title from [whatever languages you have preferred in the movie's quality profile and any custom formats with scores in the quality profile greater than zero](https://trash-guides.info/Radarr/Tips/How-to-setup-language-custom-formats/).
 - Parsing (i.e. importing) looks for a match in all Translations and Alternative Titles.
   - Language of the release may also be derived from the indexer or trackers release's language in the result if provided rather than parsed from the name
 
 ## Getting Foreign Movies
 
-- To get a movie in a foreign language set your movie's Quality Profile Language to Original (Movie's Original Language\*), a specific language for that profile, or `Any` and create and score greater than 0 Custom Formats with Language Conditions to determine which language to grab.
+- To get a movie in a foreign language set your movie's Quality Profile Language to Original (Movie's Original Language\*), a specific language for that profile, or `Any` and create and score greater than 0 [Custom Formats with Language Conditions to determine which language to grab - see the linked TRaSH's Guide for details](https://trash-guides.info/Radarr/Tips/How-to-setup-language-custom-formats/).
 - Note that this does not include any indexer languages configured in the indexer's settings as `multi`.
   - Note that starting with [Radarr v4.1](https://github.com/Radarr/Radarr/commit/ad8629fac981217f5a4a5068da968c29d9ee634c) of Radarr `multi` is no longer assumed to include English
   - Users can adjust their Settings per Indexer to define what language(s) `multi` indicates

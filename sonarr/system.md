@@ -2,7 +2,7 @@
 title: Sonarr System
 description: 
 published: true
-date: 2023-08-09T15:27:13.123Z
+date: 2023-10-12T15:54:39.615Z
 tags: 
 editor: markdown
 dateCreated: 2021-09-08T17:58:43.288Z
@@ -34,6 +34,7 @@ dateCreated: 2021-09-08T17:58:43.288Z
       - [Enable Completed Download Handling](#enable-completed-download-handling)
       - [Downloading into Root Folder](#downloading-into-root-folder)
       - [Completed Download Handling is disabled](#completed-download-handling-is-disabled)
+      - [Download Client Removes Completed Downloads](#download-client-removes-completed-downloads)
     - [Indexers](#indexers)
       - [No indexers available with automatic search enabled, Sonarr will not provide any automatic search results](#no-indexers-available-with-automatic-search-enabled-sonarr-will-not-provide-any-automatic-search-results)
       - [No indexers available with RSS sync enabled, Sonarr will not grab new releases automatically](#no-indexers-available-with-rss-sync-enabled-sonarr-will-not-grab-new-releases-automatically)
@@ -182,18 +183,18 @@ If you no longer use this download client, disable it in Sonarr to prevent the e
 
 - An example of this would be:
   - Download client: Download Path: /mnt/user/downloads:/downloads
-  - Radarr: Download Path: /mnt/user/downloads:/data
-- Within this example the download client places its downloads into /downloads and therefore tells Radarr when its complete that the finished movie is in /downloads. Sonarr then comes along and says "Okay, cool, let me check in /downloads" Well, inside Radarr you did not allocate a /downloads path you allocated a /data path so it throws this error.
+  - Sonarr: Download Path: /mnt/user/downloads:/data
+- Within this example the download client places its downloads into /downloads and therefore tells Sonarr when its complete that the finished episode is in /downloads. Sonarr then comes along and says "Okay, cool, let me check in /downloads" Well, inside Sonarr you did not allocate a /downloads path you allocated a /data path so it throws this error.
 - The easiest fix for this is CONSISTENCY if you use one scheme in your download client, use it across the board.
 
 - Team Sonarr is a big fan of simply using /data.
   - Download client: /mnt/user/data/downloads:/data/downloads
-  - Radarr: /mnt/user/data:/data
+  - Sonarr: /mnt/user/data:/data
 
-- Now within the download client you can specify where in /data you'd like to place your downloads, now this varies depending on the client but you should be able to tell it "Yeah download client place my files into." /data/torrents (or usenet)/movies and since you used /data in Radarr when the download client tells Radarr it's done Radarr will come along and say "Sweet, I have a /data and I also can see /torrents (or usenet)/movies all is right in the world."
+- Now within the download client you can specify where in /data you'd like to place your downloads, now this varies depending on the client but you should be able to tell it "Yeah download client place my files into." /data/torrents (or usenet)/tv and since you used /data in Sonarr when the download client tells Sonarr it's done Sonarr will come along and say "Sweet, I have a /data and I also can see /torrents (or usenet)/tv all is right in the world."
 - There are many great write ups: our wiki [Docker Guide](/docker-guide) and TRaSH's [Hardlinks and Instant Moves (Atomic-Moves)](https://trash-guides.info/hardlinks/). Now these guides place heavy emphasis on Hardlinks and Atomic moves, but the general concept of containers and how path mapping works is the core of these discussions.
 
-- See [TRaSH's Remote Path Guide](https://trash-guides.info/Radarr/Radarr-remote-path-mapping/) for more information.
+- See [TRaSH's Remote Path Guide](https://trash-guides.info/Sonarr/Sonarr-remote-path-mapping/) for more information.
 
 #### Downloading into Root Folder
 
@@ -216,7 +217,7 @@ If you no longer use this download client, disable it in Sonarr to prevent the e
 
 #### Bad Remote Path Mapping
 
-- The location your download client is downloading files to is causing problems. Check the logs for further information. This may be permissions or attempting to go from windows to linux or linux to windows without a remote path map. See [TRaSH's Remote Path Guide](https://trash-guides.info/Radarr/Radarr-remote-path-mapping/) for more information.
+- The location your download client is downloading files to is causing problems. Check the logs for further information. This may be permissions or attempting to go from windows to linux or linux to windows without a remote path map. See [TRaSH's Remote Path Guide](https://trash-guides.info/Sonarr/Sonarr-remote-path-mapping/) for more information.
 
 #### Permissions Error
 
@@ -261,6 +262,14 @@ If you no longer use this download client, disable it in Sonarr to prevent the e
 > \* Completed Download Handling only works properly if the download client and Sonarr are on the same machine since it gets the path to be imported directly from the download client otherwise a remote map is needed.
 > \* Completed Download Handling requires Sonarr has read and write access to the completed download directory
 {.is-warning}
+
+#### Download Client Removes Completed Downloads
+
+{#download-client-removes-completed-downloads}
+
+- It's required that your download client retain its history of completed downloads until Sonarr has imported them. If history retention is disabled then \*Arr may not see the completed download before it is removed from the download client. Your download client should be set to keep (usenet) and pause not remove (torrents) downloads after completion: **either indefinitely or for at least 14 days**.
+  - Sabnzbd: Switches => Post Processing => Keep Jobs **must** be set to 14 days or greater OR be set to Keep All History
+- Removing completed downloads from your client can be managed by Sonarr and enabled via the download client settings in \*Arr. Thus \*Arr can ensure that your download client history is cleaned up.
 
 ### Indexers
 
